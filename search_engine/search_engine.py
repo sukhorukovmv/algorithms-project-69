@@ -4,29 +4,39 @@ import re
 def search(docs, query):
     if query == "":
         return docs
-    term_query = "".join(re.findall(r"\w+", query)).lower()
+
+    term_query = list(
+        map(lambda x: "".join(re.findall(r"\w+", x)).lower(), query.split())
+    )
+
+    print("term_query")
+    print(term_query)
 
     result = []
-    rel_count = 0
+    count = 0
     for doc in docs:
+        word_count = {}
         for token in doc["text"].split():  # token необработанное слово
             term = "".join(
                 re.findall(r"\w+", token)
             ).lower()  # term обработанное слово
 
-            if term_query == term:
-                rel_count += 1
-                # result.append(doc)
+            if term in term_query:
+                word_count[term] = term
+                count += 1
 
-        if rel_count != 0:
+        if count != 0:
             result.append(
                 {
-                    "rel_count": rel_count,
+                    "word_count": len(word_count),
+                    "count": count,
                     "doc": doc,
                 },
             )
-            rel_count = 0
+            count = 0
+            word_count.clear()
 
-    result.sort(key=lambda x: x["rel_count"], reverse=True)
+    print(result)
+    result.sort(key=lambda x: (x["word_count"], x["count"]), reverse=True)
     print(result)
     return [item["doc"] for item in result]
