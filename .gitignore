@@ -1,0 +1,46 @@
+# Папки виртуальных окружений
+venv/
+env/
+.env/
+.venv/
+env.bak/
+venv.bak/
+__pycache__/
+*.py[cod]
+
+# Кэш и временные файлы
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+*.log
+*.sqlite3
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+
+# Файлы конфигурации IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Другие
+*.coverage
+*.pytest_cache/
+.coverage.*
+*.hypothesis/
+*.mypy_cache/
+*.tox/
+*.dist-info/
+*.egg-info/
+*.whl
+*.tar.gz
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+Find More
