@@ -1,3 +1,4 @@
+import math
 import re
 
 
@@ -9,34 +10,61 @@ def search(docs, query):
         map(lambda x: "".join(re.findall(r"\w+", x)).lower(), query.split())
     )
 
-    print("term_query")
-    print(term_query)
+    index = reverse_index(docs)
+    tf_idf_dict = {}
+    for term in term_query:  # проходим по массиву слов в запросе
+        # проходим по всем документов где встретилось слово
+        for doc_id in index.get(term, []):
+            # считаем tf, idf, tf_idf для каждого слова в документе
+            tf = (
+                index[term][doc_id]["termFreqInDoc"]
+                / index[term][doc_id]["lenDoc"]
+            )
+            termCount = len(index[term])
+            idf = math.log2(
+                (1 + (len(docs) - termCount + 1)) / (termCount + 0.5)
+            )
+            tf_idf = tf * idf
 
-    result = []
-    count = 0
+            if doc_id in tf_idf_dict:
+                # если в документе встретилось несколько слов из запроса,
+                # то все tf_idf для каждого слова суммируются для этого дока
+                tf_idf_dict[doc_id] = tf_idf_dict[doc_id] + tf_idf
+            else:
+                tf_idf_dict[doc_id] = tf_idf
+
+    return sorted(
+        [doc for doc in docs if doc["id"] in tf_idf_dict.keys()],
+        key=lambda doc: tf_idf_dict[doc["id"]],
+        reverse=True,
+    )
+
+
+def reverse_index(docs):
+    index = {}
     for doc in docs:
-        word_count = {}
-        for token in doc["text"].split():  # token необработанное слово
+        words = doc["text"].split()
+
+        for word in words:
             term = "".join(
-                re.findall(r"\w+", token)
+                re.findall(r"\w+", word)
             ).lower()  # term обработанное слово
 
-            if term in term_query:
-                word_count[term] = term
-                count += 1
+            if term in index:
+                if doc["id"] in index[term]:
+                    index[term][doc["id"]]["termFreqInDoc"] += 1
+                    index[term][doc["id"]]["lenDoc"] = len(doc["text"].split())
+                else:
+                    index[term][doc["id"]] = {
+                        "termFreqInDoc": 1,
+                        "lenDoc": len(doc["text"].split()),
+                    }
+            else:
+                index[term] = {
+                    doc["id"]: {
+                        "termFreqInDoc": 1,
+                        "lenDoc": len(doc["text"].split()),
+                    }
+                }
 
-        if count != 0:
-            result.append(
-                {
-                    "word_count": len(word_count),
-                    "count": count,
-                    "doc": doc,
-                },
-            )
-            count = 0
-            word_count.clear()
-
-    print(result)
-    result.sort(key=lambda x: (x["word_count"], x["count"]), reverse=True)
-    print(result)
-    return [item["doc"] for item in result]
+    return index
