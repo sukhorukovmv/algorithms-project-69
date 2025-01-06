@@ -1,6 +1,5 @@
 [tool.poetry]
 authors = ["Sukhorukov Maksim <sukhorukov.maksim95@gmail.com>"]
-requires-python = "<4.0,>=3.12"
 name = "algorithms-project"
 version = "0.1.0"
 description = "Example application"
