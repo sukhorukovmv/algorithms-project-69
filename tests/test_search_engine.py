@@ -100,6 +100,32 @@ class TestSearchFunction(unittest.TestCase):
         }
         self.assertEqual(reverse_index(self.docs), expected_index)
 
+    def test_fuzzy_search():
+        doc1 = "I can't shoot straight unless I've had a pint!"
+        doc2 = "Don't shoot shoot shoot that thing at me."
+        doc3 = "I'm your shooter."
+
+        docs = [
+            {"id": "doc1", "text": doc1},
+            {"id": "doc2", "text": doc2},
+            {"id": "doc3", "text": doc3},
+        ]
+
+        assert search(docs, "shoot at me") == ["doc2", "doc1"]
+
+        doc1 = (
+            "I can't shoot shoot shoot shoot shoot straight unless I've had a pint!"
+        )
+        doc2 = "Don't shoot that thing at me."
+        doc3 = "I'm your shooter."
+
+        docs = [
+            {"id": "doc1", "text": doc1},
+            {"id": "doc2", "text": doc2},
+            {"id": "doc3", "text": doc3},
+        ]
+
+        assert search(docs, "shoot at me") == ["doc2", "doc1"]
 
 if __name__ == "__main__":
     unittest.main()

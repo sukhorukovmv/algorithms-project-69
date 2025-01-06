@@ -33,11 +33,15 @@ def search(docs, query):
             else:
                 tf_idf_dict[doc_id] = tf_idf
 
-    return sorted(
-        [doc for doc in docs if doc["id"] in tf_idf_dict.keys()],
-        key=lambda doc: tf_idf_dict[doc["id"]],
-        reverse=True,
+    sorted_dict = dict(
+        sorted(tf_idf_dict.items(), key=lambda x: x[1], reverse=True)
     )
+    return list(sorted_dict.keys())
+    # return sorted(
+    #     [doc for doc in docs if doc["id"] in tf_idf_dict.keys()],
+    #     key=lambda doc: tf_idf_dict[doc["id"]],
+    #     reverse=True,
+    # )
 
 
 def reverse_index(docs):
