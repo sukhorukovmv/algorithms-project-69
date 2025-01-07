@@ -16,8 +16,6 @@ def search(docs, query):
         # проходим по всем документов где встретилось слово
         for doc_id in index.get(term, []):
             # считаем tf, idf, tf_idf для каждого слова в документе
-            print(term)
-            print(index.get(term, []))
             tf = (
                 index[term][doc_id]["termFreqInDoc"]
                 / index[term][doc_id]["lenDoc"]
@@ -27,7 +25,6 @@ def search(docs, query):
             idf = math.log2(
                 1 + (docsCount - termCount + 1) / (termCount + 0.5)
             )
-            print(idf)
             tf_idf = tf * idf
 
             if doc_id in tf_idf_dict:
@@ -40,7 +37,6 @@ def search(docs, query):
     sorted_dict = dict(
         sorted(tf_idf_dict.items(), key=lambda x: x[1], reverse=True)
     )
-    print(tf_idf_dict)
     return list(sorted_dict.keys())
     # return sorted(
     #     [doc for doc in docs if doc["id"] in tf_idf_dict.keys()],
