@@ -10,7 +10,7 @@ def search(docs, query):
         map(lambda x: "".join(re.findall(r"\w+", x)).lower(), query.split())
     )
 
-    index = reverse_index(docs)
+    index = build_reverse_index(docs)
     tf_idf_dict = {}
     for term in term_query:  # проходим по массиву слов в запросе
         # проходим по всем документов где встретилось слово
@@ -44,7 +44,7 @@ def search(docs, query):
     # )
 
 
-def reverse_index(docs):
+def build_reverse_index(docs):
     index = {}
     for doc in docs:
         words = doc["text"].split()

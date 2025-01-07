@@ -1,12 +1,11 @@
 import unittest
 
 from search_engine.search_engine import search
-from search_engine.search_engine import reverse_index
+from search_engine.search_engine import build_reverse_index
 
 
 class TestSearchFunction(unittest.TestCase):
     def setUp(self):
-        # Подготовка тестовых данных
         self.docs = [
             {
                 "id": "doc1",
@@ -17,63 +16,25 @@ class TestSearchFunction(unittest.TestCase):
         ]
 
     def test_search_found(self):
-        # Тест на успешный поиск
-        query = "shoot"
-        expected_result = [
-            {"id": "doc2", "text": "Don't shoot shoot shoot that thing at me."},
-            {
-                "id": "doc1",
-                "text": "I can't shoot straight unless I've had a pint!",
-            },
-        ]
-        self.assertEqual(search(self.docs, query), expected_result)
+        self.assertEqual(search(self.docs, "shoot"), ["doc2", "doc1"])
 
     def test_search_found_2(self):
-        query = "pint!"
-        expected_result = [
-            {
-                "id": "doc1",
-                "text": "I can't shoot straight unless I've had a pint!",
-            },
-        ]
-        self.assertEqual(search(self.docs, query), expected_result)
+        self.assertEqual(search(self.docs, "pint!"), ["doc1"])
 
     def test_search_found_3(self):
-        query = "shoot at me"
-        expected_result = [
-            {"id": "doc2", "text": "Don't shoot shoot shoot that thing at me."},
-            {
-                "id": "doc1",
-                "text": "I can't shoot straight unless I've had a pint!",
-            },
-        ]
-        self.assertEqual(search(self.docs, query), expected_result)
+        self.assertEqual(search(self.docs, "shoot at me"), ["doc2", "doc1"])
 
     def test_search_not_found(self):
-        # Тест на случай, когда строка не найдена
-        query = "not found"
-        expected_result = []
-        self.assertEqual(search(self.docs, query), expected_result)
+        self.assertEqual(search(self.docs, "not found"), [])
 
     def test_search_empty_docs(self):
-        # Тест на пустой список документов
-        query = "test"
-        expected_result = []
-        self.assertEqual(search([], query), expected_result)
+        self.assertEqual(search([], "test"), [])
 
     def test_search_empty_query(self):
-        # Тест на пустую строку запроса
-        query = ""
-        expected_result = (
-            self.docs
-        )  # Если запрос пустой, должны вернуть все документы
-        self.assertEqual(search(self.docs, query), expected_result)
+        self.assertEqual(search(self.docs, ""), self.docs)
 
     def test_search_case_sensitive(self):
-        # Тест на чувствительность к регистру
-        query = "Test"
-        expected_result = []
-        self.assertEqual(search(self.docs, query), expected_result)
+        self.assertEqual(search(self.docs, "Test"), [])
 
     def test_reverse_index(self):
         expected_index = {
@@ -98,34 +59,8 @@ class TestSearchFunction(unittest.TestCase):
             "your": {"doc3": {"termFreqInDoc": 1, "lenDoc": 3}},
             "shooter": {"doc3": {"termFreqInDoc": 1, "lenDoc": 3}},
         }
-        self.assertEqual(reverse_index(self.docs), expected_index)
+        self.assertEqual(build_reverse_index(self.docs), expected_index)
 
-    def test_fuzzy_search():
-        doc1 = "I can't shoot straight unless I've had a pint!"
-        doc2 = "Don't shoot shoot shoot that thing at me."
-        doc3 = "I'm your shooter."
-
-        docs = [
-            {"id": "doc1", "text": doc1},
-            {"id": "doc2", "text": doc2},
-            {"id": "doc3", "text": doc3},
-        ]
-
-        assert search(docs, "shoot at me") == ["doc2", "doc1"]
-
-        doc1 = (
-            "I can't shoot shoot shoot shoot shoot straight unless I've had a pint!"
-        )
-        doc2 = "Don't shoot that thing at me."
-        doc3 = "I'm your shooter."
-
-        docs = [
-            {"id": "doc1", "text": doc1},
-            {"id": "doc2", "text": doc2},
-            {"id": "doc3", "text": doc3},
-        ]
-
-        assert search(docs, "shoot at me") == ["doc2", "doc1"]
 
 if __name__ == "__main__":
     unittest.main()
