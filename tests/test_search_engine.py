@@ -18,25 +18,25 @@ class TestSearchFunction(unittest.TestCase):
 
     def test_search_found(self):
         self.assertEqual(search(self.docs, "shoot"), ["doc2", "doc1"])
-    
+
     def test_search_found_2(self):
         self.assertEqual(search(self.docs, "pint!"), ["doc1"])
-    
+
     def test_search_found_3(self):
         self.assertEqual(search(self.docs, "shoot at me"), ["doc2", "doc1"])
-    
+
     def test_search_not_found(self):
         self.assertEqual(search(self.docs, "not found"), [])
-    
+
     def test_search_empty_docs(self):
         self.assertEqual(search([], "test"), [])
-    
+
     def test_search_empty_query(self):
         self.assertEqual(search(self.docs, ""), self.docs)
-    
+
     def test_search_case_sensitive(self):
         self.assertEqual(search(self.docs, "Test"), [])
-    
+
     def test_reverse_index(self):
         expected_index = {
             "i": {"doc1": {"termFreqInDoc": 1, "lenDoc": 9}},

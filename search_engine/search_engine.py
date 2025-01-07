@@ -22,9 +22,7 @@ def search(docs, query):
             )
             termCount = len(index[term])
             docsCount = len(docs)
-            idf = math.log2(
-                1 + (docsCount - termCount + 1) / (termCount + 0.5)
-            )
+            idf = math.log2(1 + (docsCount - termCount + 1) / (termCount + 0.5))
             tf_idf = tf * idf
 
             if doc_id in tf_idf_dict:
